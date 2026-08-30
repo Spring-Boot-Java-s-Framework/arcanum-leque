@@ -1,0 +1,45 @@
+# ===========================================================================
+# .dockerignore — único do repo.
+#
+# O build do docker/Dockerfile usa a RAIZ do repo como contexto
+# (ver docker/docker-compose.yml). Só o projeto Java (academic/src/) precisa
+# entrar no contexto — o resto (docs, .github, docker, .devcontainer) fica fora.
+#
+# Idioma "whitelist" do Docker: ignora tudo (**), re-inclui o que interessa (!),
+# depois corta dentro dele o que é rebuildado ou não vai para a imagem.
+# ===========================================================================
+
+# 1) ignora tudo
+**
+
+# 2) re-inclui só o projeto Java
+!/academic/src
+
+# ---------------------------------------------------------------------------
+# 3) dentro de academic/src/, fora o que não é fonte
+# ---------------------------------------------------------------------------
+/academic/src/target
+**/*.class
+/academic/src/.mvn/wrapper/maven-wrapper.jar
+
+# docs e orientações locais
+**/*.md
+**/CLAUDE.md
+**/.claude/
+
+# ambiente / segredos (nada disso é COPIado pelo Dockerfile)
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+**/*.keystore
+**/*.p12
+**/application-local.*
+**/application-secret*.*
+
+# logs / temporários / OS
+**/*.log
+**/*.bak
+**/*.tmp
+**/.DS_Store
+**/Thumbs.db

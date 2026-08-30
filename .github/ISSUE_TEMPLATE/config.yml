@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📄 Enunciado do Desafio 02
+    url: https://aulas.umlequedetecnologia.com.br/cursos/introducao-spring-boot/aula-02-beans-e-injecao/desafio
+    about: Regras, campos dos records, rotas e critérios de avaliação.
+  - name: 📚 Base teórica (academic/references)
+    url: https://github.com/CarlosNeto-dev/arcanum-leque/tree/main/academic/references
+    about: IoC/DI, estereótipos e arquitetura em três camadas.
+  - name: 🧭 Contexto e decisões do time (academic/planning)
+    url: https://github.com/CarlosNeto-dev/arcanum-leque/tree/main/academic/planning
+    about: Público-alvo, personas e decisões já tomadas.

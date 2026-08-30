@@ -1,0 +1,125 @@
+# ============================================================================
+# arcanum-leque · docker-compose
+#   web   → Spring Boot dev: hot reload + debug remoto (JDWP)   :8080 / :5005
+#   app   → execução "normal" (spring-boot:run, sem JDWP)       :8081
+#   test  → suíte de testes (mvnw verify); sobe, roda e sai     :8082
+#   prod  → imagem de produção mínima (jlink) + healthcheck     :8090
+#
+# Contexto de build = raiz do repo (.dockerignore único fica lá).
+# O projeto Java está em academic/src/ (pom.xml + main/); o Dockerfile copia de lá.
+# Sem serviço de banco: persistência é lista em memória (decisão do time).
+#
+# Portas do host são configuráveis por .env (copie de .env.example) — útil se
+# outra coisa já usa 8080/5005/... na sua máquina.
+# ============================================================================
+
+name: arcanum-leque
+
+x-build: &build
+  context: ..
+  dockerfile: docker/Dockerfile
+  args:
+    JAVA_VERSION: "21"
+
+services:
+  # --------------------------------------------------------------------------
+  # web — desenvolvimento: hot reload + porta de debug (JDWP no processo da app)
+  # --------------------------------------------------------------------------
+  web:
+    build:
+      <<: *build
+      target: debug
+    image: arcanum-leque:debug
+    container_name: arcanum-leque-web
+    command:
+      - ./mvnw
+      - -B
+      - spring-boot:run
+      - -Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    ports:
+      - "${WEB_PORT:-8080}:8080"        # API
+      - "${WEB_DEBUG_PORT:-5005}:5005"  # debug remoto (JDWP)
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+    volumes:
+      - ../academic/src/main:/app/main:delegated
+      - ../academic/src/test:/app/test:delegated
+      - ../academic/src/pom.xml:/app/pom.xml:ro
+      - maven-repo:/root/.m2
+    restart: "no"
+
+  # --------------------------------------------------------------------------
+  # app — execução "normal": spring-boot:run, sem JDWP, sem hot reload
+  # --------------------------------------------------------------------------
+  app:
+    build:
+      <<: *build
+      target: debug
+    image: arcanum-leque:debug
+    container_name: arcanum-leque-app
+    command: ["./mvnw", "-B", "spring-boot:run"]
+    ports:
+      - "${APP_PORT:-8081}:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_DEVTOOLS_RESTART_ENABLED: "false"
+    volumes:
+      - ../academic/src/main:/app/main:delegated
+      - maven-repo:/root/.m2
+    restart: "no"
+
+  # --------------------------------------------------------------------------
+  # test — roda os testes e encerra; relatórios num volume
+  # --------------------------------------------------------------------------
+  test:
+    build:
+      <<: *build
+      target: test
+    image: arcanum-leque:test
+    container_name: arcanum-leque-test
+    ports:
+      - "${TEST_PORT:-8082}:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+    volumes:
+      - ../academic/src/main:/app/main:delegated
+      - ../academic/src/test:/app/test:delegated
+      - test-reports:/app/target
+      - maven-repo:/root/.m2
+    restart: "no"
+
+  # --------------------------------------------------------------------------
+  # prod — imagem final mínima + healthcheck (10s de intervalo, 10 tentativas)
+  # --------------------------------------------------------------------------
+  prod:
+    build:
+      <<: *build
+      target: production
+    image: arcanum-leque:production
+    container_name: arcanum-leque-prod
+    ports:
+      - "${PROD_PORT:-8090}:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: production
+      JAVA_OPTS: "-XX:MaxRAMPercentage=75 -XX:+UseContainerSupport"
+    volumes:
+      - prod-logs:/app/logs
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          curl -fsS http://localhost:8080/actuator/health
+          || curl -fsS http://localhost:8080/estatisticas
+          || curl -fsS http://localhost:8080/vagas
+          || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+volumes:
+  maven-repo:
+  test-reports:
+  prod-logs:

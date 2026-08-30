@@ -1,0 +1,34 @@
+# CODEOWNERS — arcanum-leque
+#
+# Cada linha associa um padrão de caminho a um ou mais donos (@usuario ou @org/time).
+# O último padrão que casa com um arquivo é o que vale. Os donos são solicitados
+# automaticamente para revisão em todo Pull Request que toca os arquivos.
+#
+# Docs: https://docs.github.com/pt/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# ---------------------------------------------------------------------------
+# Fallback — qualquer arquivo não coberto abaixo
+# ---------------------------------------------------------------------------
+*                                       @CarlosNeto-dev
+
+# ---------------------------------------------------------------------------
+# Infraestrutura e documentação do repositório
+# ---------------------------------------------------------------------------
+/.github/                               @CarlosNeto-dev
+/docker/                                @CarlosNeto-dev
+/.devcontainer/                         @CarlosNeto-dev
+/academic/                              @CarlosNeto-dev
+/README.md                              @CarlosNeto-dev
+/README.en.md                           @CarlosNeto-dev
+
+# ---------------------------------------------------------------------------
+# Frentes do Desafio 02 — uma pessoa por frente
+#
+# Descomente e troque os placeholders quando o time definir os responsáveis e
+# os pacotes existirem. GitHub ignora linhas cujo usuário/caminho não existe,
+# por isso ficam comentadas até lá.
+# ---------------------------------------------------------------------------
+# /academic/src/main/java/br/edu/faculdade/job/           @dono-frente-vaga
+# /academic/src/main/java/br/edu/faculdade/company/       @dono-frente-empresa
+# /academic/src/main/java/br/edu/faculdade/person/        @dono-frente-pessoa
+# /academic/src/main/java/br/edu/faculdade/statistics/    @dono-frente-estatisticas

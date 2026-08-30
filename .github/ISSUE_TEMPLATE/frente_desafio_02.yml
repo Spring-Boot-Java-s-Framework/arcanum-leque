@@ -1,0 +1,46 @@
+name: "🧩 Frente do Desafio 02"
+description: "Abrir a tarefa de uma das quatro frentes (Vaga, Empresa, Pessoa, Estatísticas)."
+title: "<frente>: implementar controller + service + repository"
+labels: ["desafio-02", "frente"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Uma issue por frente. O responsável é quem fica com **essa** frente inteira.
+  - type: dropdown
+    id: frente
+    attributes:
+      label: Frente
+      options:
+        - Vaga
+        - Empresa
+        - Pessoa
+        - Estatísticas
+    validations:
+      required: true
+  - type: input
+    id: responsavel
+    attributes:
+      label: Responsável
+      placeholder: "@usuario"
+    validations:
+      required: true
+  - type: checkboxes
+    id: entregaveis
+    attributes:
+      label: Entregáveis
+      options:
+        - label: "`record` (sem anotação Spring) — campos exatos do enunciado"
+        - label: "`@Repository` com dados em memória (mínimos: 12 vagas / 5 empresas / 6 pessoas)"
+        - label: "`@Service` com a regra (listar / buscar / agregar)"
+        - label: "`@RestController` com as rotas da frente"
+        - label: "Injeção só por construtor, campo `final`, sem `new` entre classes"
+        - label: "Rotas testadas no Postman"
+        - label: "README atualizado (responsável da frente)"
+  - type: textarea
+    id: dependencias
+    attributes:
+      label: Dependências / combinados
+      description: "Ex.: aguardando o `record Vaga` da Parte 1; slugs combinados com a frente Empresa."
+    validations:
+      required: false

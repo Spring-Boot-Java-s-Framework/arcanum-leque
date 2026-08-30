@@ -1,0 +1,28 @@
+{
+  "name": "arcanum-leque · Pessoa track",
+  "build": {
+    "context": "..",
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-boot-dev-pack",
+        "redhat.vscode-yaml",
+        "editorconfig.editorconfig"
+      ],
+      "settings": {
+        "java.configuration.updateBuildConfiguration": "automatic",
+        "java.import.maven.enabled": true,
+        "editor.formatOnSave": true
+      }
+    }
+  },
+  "containerEnv": {
+    "FRENTE": "pessoa"
+  },
+  "forwardPorts": [8082],
+  "postCreateCommand": "java -version",
+  "remoteUser": "vscode"
+}
