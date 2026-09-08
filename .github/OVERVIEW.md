@@ -28,6 +28,7 @@ flowchart TD
     G --> PR["PULL_REQUEST_TEMPLATE.md — checklist do Desafio 02"]
     G --> IT["ISSUE_TEMPLATE/ — moldes de issue"]
     G --> CB["CONTRIBUTING.md — fluxo de colaboração"]
+    G --> WF["workflows/release.yml — CI só em tag de release"]
     IT --> F1["frente_desafio_02.yml"]
     IT --> F2["bug_report.yml"]
     IT --> F3["feature_request.yml"]
@@ -43,6 +44,7 @@ flowchart TD
 | [`ISSUE_TEMPLATE/feature_request.yml`](ISSUE_TEMPLATE/feature_request.yml) | Ideia / melhoria. |
 | [`ISSUE_TEMPLATE/config.yml`](ISSUE_TEMPLATE/config.yml) | Desliga issue em branco; links para enunciado e docs. |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Fluxo **fork + PR**, modelo de branches (`main` · `develop` · `feat/*`), diagramas, Conventional Commits, checklist. |
+| [`workflows/release.yml`](workflows/release.yml) | CI que roda **só** em push de tag `v*`: testes, agente de boas práticas (restrições duras do Desafio 02) e publicação do GitHub Release com o jar leve. |
 
 ---
 

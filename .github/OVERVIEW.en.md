@@ -28,6 +28,7 @@ flowchart TD
     G --> PR["PULL_REQUEST_TEMPLATE.md — Challenge 02 checklist"]
     G --> IT["ISSUE_TEMPLATE/ — issue forms"]
     G --> CB["CONTRIBUTING.md — collaboration flow"]
+    G --> WF["workflows/release.yml — CI on release tag only"]
     IT --> F1["frente_desafio_02.yml"]
     IT --> F2["bug_report.yml"]
     IT --> F3["feature_request.yml"]
@@ -43,6 +44,7 @@ flowchart TD
 | [`ISSUE_TEMPLATE/feature_request.yml`](ISSUE_TEMPLATE/feature_request.yml) | Idea / improvement. |
 | [`ISSUE_TEMPLATE/config.yml`](ISSUE_TEMPLATE/config.yml) | Disables blank issues; links to the statement and docs. |
 | [`CONTRIBUTING.en.md`](CONTRIBUTING.en.md) | **Fork + PR** flow, branch model (`main` · `develop` · `feat/*`), diagrams, Conventional Commits, checklist. |
+| [`workflows/release.yml`](workflows/release.yml) | CI that runs **only** on a `v*` tag push: tests, a best-practices agent (Challenge 02 hard constraints) and GitHub Release publishing with the light jar. |
 
 > Issue form labels and bodies are written in Portuguese (the team's language).
 

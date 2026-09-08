@@ -1,0 +1,173 @@
+# ===========================================================================
+# release.yml — CI de release do arcanum-leque
+#
+# Dispara SOMENTE quando uma tag de release é empurrada (padrão `v*`, ex.:
+# `v0.1.0`, `v1.2.3-rc1`). Nenhum push de branch, PR ou commit sem tag ativa
+# este workflow. Fluxo do time: `develop → main` via PR de release, com *tag*
+# (ver .github/CONTRIBUTING.md).
+#
+# Raiz Maven do projeto: academic/src (layout não-padrão, ver pom.xml).
+# Build: wrapper ./mvnw — decisão do time (academic/planning/README.md, D4).
+# ===========================================================================
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write   # necessário para criar o GitHub Release
+
+env:
+  MVN_DIR: academic/src
+
+jobs:
+  # -------------------------------------------------------------------------
+  # 1) testes — precisa passar antes de qualquer coisa
+  # -------------------------------------------------------------------------
+  testes:
+    name: Testes (./mvnw test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Java 21 (Temurin) + cache Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: ./mvnw test
+        working-directory: ${{ env.MVN_DIR }}
+        run: ./mvnw --batch-mode --no-transfer-progress test
+
+      - name: Publica relatório de testes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: ${{ env.MVN_DIR }}/target/surefire-reports/
+          if-no-files-found: ignore
+
+  # -------------------------------------------------------------------------
+  # 2) agente de boas práticas — guarda as "restrições duras" do Desafio 02
+  #    (CLAUDE.md · academic/references/04-desafio-02-leque-de-vagas.md)
+  # -------------------------------------------------------------------------
+  boas-praticas:
+    name: Agente de boas práticas
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Java 21 (Temurin) + cache Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Guardas de arquitetura (restrições duras)
+        working-directory: ${{ env.MVN_DIR }}
+        run: |
+          set -euo pipefail
+          SRC=main/java/br/edu/faculdade
+          falhas=0
+          aviso() { echo "::error file=$1::$2"; falhas=$((falhas+1)); }
+
+          echo "→ pom.xml não pode trazer JPA / validação / security"
+          if grep -Eq 'spring-boot-starter-(data-jpa|validation|security)' pom.xml; then
+            aviso pom.xml "dependência proibida no Desafio 02 (jpa/validation/security)"
+          fi
+
+          if [ -d "$SRC" ]; then
+            mapfile -t JAVA < <(find "$SRC" -name '*.java' ! -name 'Application.java' \
+              -not -path '*/smoke/*' || true)
+
+            for f in "${JAVA[@]:-}"; do
+              [ -n "${f:-}" ] || continue
+
+              # sem `new` entre classes do projeto — a ligação é do container Spring
+              if grep -nE 'new\s+[A-Z][A-Za-z0-9_]*(Service|Repository|Controller)\s*\(' "$f"; then
+                aviso "$f" "uso de 'new' em bean do projeto — injete por construtor"
+              fi
+
+              # injeção só por construtor: nada de @Autowired em campo
+              if grep -nE '@Autowired' "$f"; then
+                aviso "$f" "@Autowired encontrado — injeção deve ser só por construtor (campo final)"
+              fi
+
+              # records não podem ter anotações do Spring
+              if grep -qE '^\s*public\s+record\s' "$f" && grep -nE '@(Component|Service|Repository|RestController|Controller|Bean)' "$f"; then
+                aviso "$f" "record com anotação do Spring"
+              fi
+
+              # controller não pode ter lógica de negócio (if/for de regra)
+              case "$f" in
+                *Controller.java)
+                  if grep -nE '^\s*(if|for|while)\s*\(' "$f"; then
+                    aviso "$f" "possível lógica de negócio no controller (if/for/while)"
+                  fi
+                  ;;
+              esac
+            done
+
+            echo "→ EstatisticasService deve depender do VagaRepository, não do VagaService"
+            EST=$(find "$SRC/statistics" -name 'EstatisticasService.java' 2>/dev/null || true)
+            if [ -n "$EST" ] && grep -nE 'VagaService' "$EST"; then
+              aviso "$EST" "EstatisticasService depende de VagaService (deve ser VagaRepository)"
+            fi
+          else
+            echo "pacotes de frente ainda vazios — nada a validar"
+          fi
+
+          if [ "$falhas" -gt 0 ]; then
+            echo "✗ $falhas violação(ões) das restrições duras"
+            exit 1
+          fi
+          echo "✓ restrições duras ok"
+
+      - name: Estilo de código — mvnw verify (sem testes; reaproveita cache)
+        working-directory: ${{ env.MVN_DIR }}
+        run: ./mvnw --batch-mode --no-transfer-progress -DskipTests verify
+
+  # -------------------------------------------------------------------------
+  # 3) empacota o build "leve" e publica o GitHub Release
+  # -------------------------------------------------------------------------
+  release:
+    name: Empacota e publica o Release
+    runs-on: ubuntu-latest
+    needs: [testes, boas-praticas]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Java 21 (Temurin) + cache Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Build leve (-Plight clean package)
+        working-directory: ${{ env.MVN_DIR }}
+        run: ./mvnw --batch-mode --no-transfer-progress -Plight clean package
+
+      - name: Renomeia o jar com a versão da tag
+        working-directory: ${{ env.MVN_DIR }}
+        run: |
+          set -eu
+          cp target/arcanum-leque.jar "target/arcanum-leque-${GITHUB_REF_NAME}.jar"
+
+      - name: Anexa o jar ao build
+        uses: actions/upload-artifact@v4
+        with:
+          name: arcanum-leque-${{ github.ref_name }}
+          path: ${{ env.MVN_DIR }}/target/arcanum-leque-${{ github.ref_name }}.jar
+
+      - name: Cria o GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          files: ${{ env.MVN_DIR }}/target/arcanum-leque-${{ github.ref_name }}.jar
