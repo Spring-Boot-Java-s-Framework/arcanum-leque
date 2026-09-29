@@ -11,8 +11,6 @@ public class Pessoa {
         this.id = id;
         this.nome = nome;
         this.email = email;
-
-
         this.area = area;
         this.senioridade = senioridade;
     }
