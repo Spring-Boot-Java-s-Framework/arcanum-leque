@@ -29,10 +29,10 @@ public class PessoaController {
      }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Pessoa> atualizarPessoa(@RequestBody PessoaEntradaDTO pessoaEntradaDTO, @PathVariable String id){
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseEntity<PessoaRespostaDTO> atualizarPessoa(@RequestBody PessoaEntradaDTO pessoaEntradaDTO, @PathVariable String id){
         return pessoaService.atualizarPessoa(pessoaEntradaDTO, id)
-        .map(ResponseEntity::ok)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 

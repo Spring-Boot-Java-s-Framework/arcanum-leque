@@ -22,12 +22,13 @@ public class PessoaService {
         return pessoaRepository.buscaPorId(id);
     }
 
-    public Optional<Pessoa> atualizarPessoa(PessoaEntradaDTO dto, String id) {
+    public Optional<PessoaRespostaDTO> atualizarPessoa(PessoaEntradaDTO dto, String id) {
         Pessoa pessoa = new Pessoa(
                 id,
                 dto.nome(), dto.email(), dto.area(), dto.senioridade());
 
-        return pessoaRepository.atualizarPessoa(pessoa, id);
+        return pessoaRepository.atualizarPessoa(pessoa, id)
+                .map(PessoaRespostaDTO::toRespostaDTO);
     }
 
     public PessoaRespostaDTO criarPessoa(PessoaEntradaDTO dto) {
