@@ -1,0 +1,39 @@
+# Configuração base — Desafio 02 (dados em memória, sem banco).
+spring:
+  application:
+    name: arcanum-leque
+  main:
+    banner-mode: "off"
+
+server:
+  port: ${APP_PORT:8080}
+
+# Actuator: só o health, usado pelo HEALTHCHECK do Docker.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  devtools:
+    restart:
+      enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+  devtools:
+    restart:
+      enabled: false

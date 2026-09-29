@@ -1,0 +1,26 @@
+name: "💡 Ideia / melhoria"
+description: "Sugerir uma evolução (ex.: métricas extras em /estatisticas, mais dados)."
+title: "ideia: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: proposta
+    attributes:
+      label: Proposta
+      description: "O que mudar e por quê."
+    validations:
+      required: true
+  - type: textarea
+    id: impacto
+    attributes:
+      label: Impacto nas frentes
+      description: "Cria dependência entre frentes? Contraria alguma regra do enunciado ou decisão do time?"
+    validations:
+      required: false
+  - type: checkboxes
+    id: fase
+    attributes:
+      label: Confirmações
+      options:
+        - label: "Não depende de banco / JPA / validação / DTO (fora do escopo desta fase)"
+        - label: "Verifiquei `academic/planning/` para não repropor algo já decidido"

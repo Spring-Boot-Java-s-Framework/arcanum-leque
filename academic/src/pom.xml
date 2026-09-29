@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- Spring Boot 3.x — starter parent traz o gerenciamento de versões -->
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.3.5</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>br.edu.faculdade</groupId>
+  <artifactId>arcanum-leque</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <name>arcanum-leque</name>
+  <description>Backend (API REST) do Leque de Vagas — Desafio 02 (dados em memória)</description>
+
+  <properties>
+    <java.version>21</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- Camada final do container: sem parametrização adicional aqui -->
+    <spring-boot.build-image.imageName>arcanum-leque:${project.version}</spring-boot.build-image.imageName>
+  </properties>
+
+  <dependencies>
+    <!-- Web MVC: controllers REST das 4 frentes -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- Actuator: expõe /actuator/health usado pelo HEALTHCHECK do Docker -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <!-- DevTools: hot reload no stage/serviço de debug (não vai para produção) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- Testes -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!--
+      NÃO incluir (restrições duras do Desafio 02):
+      - spring-boot-starter-data-jpa / driver de banco  → persistência é lista em memória
+      - spring-boot-starter-validation                  → validação é de aula futura
+      - spring-boot-starter-security                    → sem autenticação até a aula 10
+    -->
+  </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}</finalName>
+
+    <!-- Reflete a estrutura criada em academic/src/ (layout não-padrão):
+         raiz do projeto = academic/src, fontes em main/java, recursos em main/resources -->
+    <sourceDirectory>${project.basedir}/main/java</sourceDirectory>
+    <testSourceDirectory>${project.basedir}/test/java</testSourceDirectory>
+    <resources>
+      <resource>
+        <directory>${project.basedir}/main/resources</directory>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>${project.basedir}/test/resources</directory>
+      </testResource>
+    </testResources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <release>${java.version}</release>
+          <!-- nomes de parâmetros no bytecode: ajuda a injeção por construtor do Spring -->
+          <parameters>true</parameters>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>br.edu.faculdade.Application</mainClass>
+          <!-- jar em camadas: o Dockerfile usa layertools no stage builder -->
+          <layers>
+            <enabled>true</enabled>
+          </layers>
+          <!-- DevTools nunca entra no artefato empacotado -->
+          <excludeDevtools>true</excludeDevtools>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <!-- ====================================================================
+         profile `light` — build final "comprimido para o essencial":
+           mvn -Plight clean package
+         - AOT: pré-processa o contexto Spring (menos reflexão em runtime)
+         - sem símbolos de debug nas classes  → .class menores
+         - sem DevTools, jar em camadas       → imagem de produção enxuta
+         Resultado: target/arcanum-leque.jar mais leve e de partida mais rápida.
+         ==================================================================== -->
+    <profile>
+      <id>light</id>
+      <properties>
+        <spring-boot.aot.enabled>true</spring-boot.aot.enabled>
+        <maven.compiler.debug>false</maven.compiler.debug>
+        <maven.compiler.parameters>true</maven.compiler.parameters>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>process-aot</id>
+                <goals>
+                  <goal>process-aot</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <mainClass>br.edu.faculdade.Application</mainClass>
+              <excludeDevtools>true</excludeDevtools>
+              <layers>
+                <enabled>true</enabled>
+              </layers>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>

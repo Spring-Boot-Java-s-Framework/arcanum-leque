@@ -1,0 +1,42 @@
+name: "🐛 Bug"
+description: "Algo que não funciona como esperado (rota, resposta, build)."
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: frente
+    attributes:
+      label: Frente afetada
+      options:
+        - Vaga
+        - Empresa
+        - Pessoa
+        - Estatísticas
+        - Infra / build / documentação
+        - Não sei
+    validations:
+      required: true
+  - type: textarea
+    id: esperado-vs-obtido
+    attributes:
+      label: O que era esperado x o que aconteceu
+    validations:
+      required: true
+  - type: textarea
+    id: reproducao
+    attributes:
+      label: Como reproduzir
+      description: "Passos, rota chamada, corpo da requisição."
+      placeholder: |
+        1. subir a app
+        2. GET /vagas/999
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Logs / contexto
+      render: text
+    validations:
+      required: false
