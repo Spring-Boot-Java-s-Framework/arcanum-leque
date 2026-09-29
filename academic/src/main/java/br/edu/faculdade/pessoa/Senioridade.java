@@ -1,8 +1,8 @@
-package br.edu.faculdade.person;
+package br.edu.faculdade.pessoa;
 
-public enum Seniority {
-    INTERN,
+public enum Senioridade {
+    ESTAGIARIO,
     JUNIOR,
-    MID_LEVEL,
+    PLENO,
     SENIOR
 }

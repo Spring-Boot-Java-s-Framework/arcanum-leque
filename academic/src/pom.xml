@@ -46,6 +46,12 @@
       <optional>true</optional>
     </dependency>
 
+    <!-- Bean Validation (Jakarta): anotações @NotNull, @NotBlank etc. nos DTOs -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+
     <!-- Testes -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -56,7 +62,6 @@
     <!--
       NÃO incluir (restrições duras do Desafio 02):
       - spring-boot-starter-data-jpa / driver de banco  → persistência é lista em memória
-      - spring-boot-starter-validation                  → validação é de aula futura
       - spring-boot-starter-security                    → sem autenticação até a aula 10
     -->
   </dependencies>
