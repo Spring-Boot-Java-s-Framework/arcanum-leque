@@ -1,28 +1,51 @@
-package br.edu.faculdade.person;
+package br.edu.faculdade.pessoa;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/pessoas")
+@RequestMapping("/pessoa")
 @RestController
-public class PersonController {
-    private final PersonService pessoaService;
+public class PessoaController {
+    private final PessoaService pessoaService;
 
-    public PersonController(PersonService pessoaService) {
+    public PessoaController(PessoaService pessoaService) {
         this.pessoaService = pessoaService;
     }
 
     @GetMapping
-    public List<PersonDTO> allPerson(){
-        return pessoaService.allPerson();
+    public List<PessoaRespostaDTO> todasPessoas(){
+        return pessoaService.todasPessoas();
     }
 
-    @GetMapping("/{id}")
-    public PersonDTO findPersonById(@PathVariable Integer id){
-        return pessoaService.findPersonById(id);
+     @GetMapping("/{id}")
+     public ResponseEntity<PessoaRespostaDTO> buscaPessoaPorId(@PathVariable String id) {
+         return pessoaService.buscaPessoaPorId(id)
+             .map(ResponseEntity::ok)
+             .orElse(ResponseEntity.notFound().build());
+     }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Pessoa> atualizarPessoa(@RequestBody PessoaEntradaDTO pessoaEntradaDTO, @PathVariable String id){
+        return pessoaService.atualizarPessoa(pessoaEntradaDTO, id)
+        .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public PessoaRespostaDTO criarPessoa(@Validated @RequestBody PessoaEntradaDTO pessoaEntradaDTO){
+        return pessoaService.criarPessoa(pessoaEntradaDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> removePessoa(@PathVariable String id){
+        return pessoaService.removePessoa(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 }
