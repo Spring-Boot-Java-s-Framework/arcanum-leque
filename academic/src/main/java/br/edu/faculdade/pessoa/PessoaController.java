@@ -1,10 +1,11 @@
 package br.edu.faculdade.pessoa;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RequestMapping("/pessoa")
@@ -29,18 +30,19 @@ public class PessoaController {
      }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<PessoaRespostaDTO> atualizarPessoa(@RequestBody PessoaEntradaDTO pessoaEntradaDTO, @PathVariable String id){
+    public ResponseEntity<PessoaRespostaDTO> atualizarPessoa(@Validated @RequestBody PessoaEntradaDTO pessoaEntradaDTO, @PathVariable String id){
         return pessoaService.atualizarPessoa(pessoaEntradaDTO, id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public PessoaRespostaDTO criarPessoa(@Validated @RequestBody PessoaEntradaDTO pessoaEntradaDTO){
-        return pessoaService.criarPessoa(pessoaEntradaDTO);
+    public ResponseEntity<PessoaRespostaDTO> criarPessoa(@Validated @RequestBody PessoaEntradaDTO pessoaEntradaDTO, UriComponentsBuilder uriBuilder) {
+        PessoaRespostaDTO pessoaCriada = pessoaService.criarPessoa(pessoaEntradaDTO);
+        URI uri = uriBuilder.path("/pessoa/{id}").buildAndExpand(pessoaCriada.id()).toUri();
+        return ResponseEntity.created(uri).body(pessoaCriada);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removePessoa(@PathVariable String id){

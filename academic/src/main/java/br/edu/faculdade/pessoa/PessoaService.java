@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class PessoaService {
@@ -15,11 +16,13 @@ public class PessoaService {
     }
 
     public List<PessoaRespostaDTO> todasPessoas() {
-        return pessoaRepository.todasPessoas();
+        return pessoaRepository.todasPessoas().stream()
+                .map(PessoaRespostaDTO::toRespostaDTO)
+                .collect(Collectors.toList());
     }
 
     public Optional<PessoaRespostaDTO> buscaPessoaPorId(String id) {
-        return pessoaRepository.buscaPorId(id);
+        return pessoaRepository.buscaPessoaPorId(id).map(PessoaRespostaDTO::toRespostaDTO);
     }
 
     public Optional<PessoaRespostaDTO> atualizarPessoa(PessoaEntradaDTO dto, String id) {
