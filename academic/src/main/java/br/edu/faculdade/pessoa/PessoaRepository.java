@@ -5,28 +5,25 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
+
 
 @Repository
 public class PessoaRepository {
-    private final List<Pessoa> pessoas = new ArrayList<>(List.of(new Pessoa("1", "Andre", "andre@neckel.tech", "Backend", Senioridade.SENIOR),
+    private final List<Pessoa> pessoas = new ArrayList<>(List.of(
+            new Pessoa("1", "Andre", "andre@neckel.tech", "Backend", Senioridade.SENIOR),
             new Pessoa("2", "Rosane", "rosane@neckel.tech", "Dados", Senioridade.ESTAGIARIO),
             new Pessoa("3", "Ana", "ana@hotmail.com", "Frontend", Senioridade.PLENO),
             new Pessoa("4", "Rodrigo", "rodrigo@hotmail.com", "Backend", Senioridade.JUNIOR),
             new Pessoa("5", "Ricardo", "ricardo@hotmail.com", "Backend", Senioridade.SENIOR),
             new Pessoa("6", "Joana", "joana@hotmail.com", "Backend", Senioridade.ESTAGIARIO)));
 
-    public List<PessoaRespostaDTO> todasPessoas(){
-        return pessoas.stream()
-                .map(PessoaRespostaDTO::toRespostaDTO)
-                .collect(Collectors.toList());
+    public List<Pessoa> todasPessoas(){
+        return pessoas;
     }
 
-    public Optional<PessoaRespostaDTO> buscaPorId(String id) {
+    public Optional<Pessoa> buscaPessoaPorId(String id) {
         return pessoas.stream()
                 .filter(p -> p.getId().equals(id))
-                .map(PessoaRespostaDTO::toRespostaDTO)
                 .findFirst();
     }
 
