@@ -2,7 +2,7 @@
   "name": "arcanum-leque · Pessoa track",
   "build": {
     "context": "..",
-    "dockerfile": "Dockerfile"
+    "dockerfile": "../Dockerfile"
   },
   "customizations": {
     "vscode": {
