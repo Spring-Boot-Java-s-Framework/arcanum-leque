@@ -1,5 +1,9 @@
 package br.edu.faculdade.config;
 
+import br.edu.faculdade.vaga.exception.RegraDeNegocioException;
+import br.edu.faculdade.vaga.exception.VagaDuplicadaException;
+import br.edu.faculdade.vaga.exception.VagaNaoEncontradaException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -64,6 +68,27 @@ public class TratadorDeErros {
         erros.put(e.getName(), "valor inválido: " + e.getValue());
         problema.setProperty("campos", erros);
 
+        return problema;
+    }
+
+    @ExceptionHandler(VagaNaoEncontradaException.class)
+    public ProblemDetail vagaNaoEncontrada(VagaNaoEncontradaException e) {
+        return problema(HttpStatus.NOT_FOUND, "Vaga não encontrada", e.getMessage());
+    }
+
+    @ExceptionHandler(VagaDuplicadaException.class)
+    public ProblemDetail vagaDuplicada(VagaDuplicadaException e) {
+        return problema(HttpStatus.CONFLICT, "Vaga duplicada", e.getMessage());
+    }
+
+    @ExceptionHandler(RegraDeNegocioException.class)
+    public ProblemDetail regraDeNegocio(RegraDeNegocioException e) {
+        return problema(HttpStatus.UNPROCESSABLE_ENTITY, "Regra de negócio violada", e.getMessage());
+    }
+
+    private ProblemDetail problema(HttpStatus status, String titulo, String detalhe) {
+        ProblemDetail problema = ProblemDetail.forStatusAndDetail(status, detalhe);
+        problema.setTitle(titulo);
         return problema;
     }
 

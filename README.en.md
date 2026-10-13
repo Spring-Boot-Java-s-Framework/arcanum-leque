@@ -201,8 +201,7 @@ Folder structure, documentation and the **Maven skeleton** in `academic/src/`:
 `pom.xml`, the `./mvnw` wrapper, `Application.java` and the 4 empty track
 packages (`job/`, `company/`, `person/`, `statistics/`). **The track classes**
 (controller/service/repository/record) **have not been written yet** — each
-track owner writes their own. A throwaway `SmokeController` (`GET /smoke`) is
-there only to validate the stack; it goes away when the Vaga track starts.
+track owner writes their own.
 
 🐳 **Docker + dev container validated end to end:** `web`/`app`/`test`/`prod`
 boot and answer HTTP; `prod` reports `healthy`.

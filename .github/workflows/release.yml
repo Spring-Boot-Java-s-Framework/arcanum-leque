@@ -82,8 +82,7 @@ jobs:
           fi
 
           if [ -d "$SRC" ]; then
-            mapfile -t JAVA < <(find "$SRC" -name '*.java' ! -name 'Application.java' \
-              -not -path '*/smoke/*' || true)
+            mapfile -t JAVA < <(find "$SRC" -name '*.java' ! -name 'Application.java' || true)
 
             for f in "${JAVA[@]:-}"; do
               [ -n "${f:-}" ] || continue

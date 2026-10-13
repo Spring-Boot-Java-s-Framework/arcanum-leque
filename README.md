@@ -197,8 +197,7 @@ Estrutura de pastas, documentação e o **esqueleto Maven** em `academic/src/`:
 `pom.xml`, wrapper `./mvnw`, `Application.java` e os 4 pacotes de frente vazios
 (`job/`, `company/`, `person/`, `statistics/`). **As classes das frentes**
 (controller/service/repository/record) **ainda não foram escritas** — cada dono
-de frente escreve a sua. Um `SmokeController` provisório (rota `GET /smoke`)
-existe só para validar a stack; sai quando a frente Vaga começar.
+de frente escreve a sua.
 
 🐳 **Docker + dev container validados de ponta a ponta:** `web`/`app`/`test`/`prod`
 sobem e respondem HTTP; `prod` fica `healthy`.
