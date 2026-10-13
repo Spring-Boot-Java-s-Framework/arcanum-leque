@@ -163,7 +163,7 @@ kebab-case, sem acento, curtas. Uma branch = um assunto.
 
 - Java: seguir o `.editorconfig` (formatar ao salvar).
 - **Classes e campos** em português, como no enunciado (`VagaRepository`,
-  `todas()`, `titulo`…); só o **pacote** é inglês (`br.edu.faculdade.job`…).
+  `todas()`, `titulo`…); também os **pacotes** (`br.edu.faculdade.vaga`, `empresa`, `pessoa`, `estatisticas`).
 - Todo `.md` humano tem par `*.md` + `*.en.md` atualizado junto.
 
 ---
