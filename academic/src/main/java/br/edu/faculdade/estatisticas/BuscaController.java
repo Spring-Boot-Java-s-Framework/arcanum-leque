@@ -1,4 +1,4 @@
-package br.edu.faculdade.statistics;
+package br.edu.faculdade.estatisticas;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.edu.faculdade.job.VagaResposta;
+import br.edu.faculdade.vaga.dto.VagaResposta;
 import jakarta.validation.constraints.Size;
 
 // @Validated precisa estar na classe para o @Size funcionar nos @RequestParam

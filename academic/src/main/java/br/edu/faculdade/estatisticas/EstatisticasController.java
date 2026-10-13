@@ -1,4 +1,4 @@
-package br.edu.faculdade.statistics;
+package br.edu.faculdade.estatisticas;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

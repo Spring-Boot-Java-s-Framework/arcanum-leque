@@ -1,4 +1,4 @@
-package br.edu.faculdade.statistics;
+package br.edu.faculdade.estatisticas;
 
 import java.util.List;
 import java.util.Map;
@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import br.edu.faculdade.job.Vaga;
-import br.edu.faculdade.job.VagaRepository;
+import br.edu.faculdade.vaga.model.Vaga;
+import br.edu.faculdade.vaga.repository.VagaRepository;
 
 @Service
 public class EstatisticasService {

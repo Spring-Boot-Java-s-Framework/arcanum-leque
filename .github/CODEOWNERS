@@ -28,7 +28,7 @@
 # os pacotes existirem. GitHub ignora linhas cujo usuário/caminho não existe,
 # por isso ficam comentadas até lá.
 # ---------------------------------------------------------------------------
-# /academic/src/main/java/br/edu/faculdade/job/           @dono-frente-vaga
-# /academic/src/main/java/br/edu/faculdade/company/       @dono-frente-empresa
-# /academic/src/main/java/br/edu/faculdade/person/        @dono-frente-pessoa
-# /academic/src/main/java/br/edu/faculdade/statistics/    @dono-frente-estatisticas
+# /academic/src/main/java/br/edu/faculdade/vaga/           @dono-frente-vaga
+# /academic/src/main/java/br/edu/faculdade/empresa/       @dono-frente-empresa
+# /academic/src/main/java/br/edu/faculdade/pessoa/        @dono-frente-pessoa
+# /academic/src/main/java/br/edu/faculdade/estatisticas/    @dono-frente-estatisticas

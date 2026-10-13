@@ -1,12 +1,12 @@
-package br.edu.faculdade.statistics;
+package br.edu.faculdade.estatisticas;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import br.edu.faculdade.job.Vaga;
-import br.edu.faculdade.job.VagaRepository;
-import br.edu.faculdade.job.VagaResposta;
+import br.edu.faculdade.vaga.model.Vaga;
+import br.edu.faculdade.vaga.repository.VagaRepository;
+import br.edu.faculdade.vaga.dto.VagaResposta;
 
 @Service
 public class BuscaService {

@@ -1,4 +1,4 @@
-package br.edu.faculdade.statistics;
+package br.edu.faculdade.estatisticas;
 
 import java.util.Map;
 

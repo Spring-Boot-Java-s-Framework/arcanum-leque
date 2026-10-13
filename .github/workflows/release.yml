@@ -114,7 +114,7 @@ jobs:
             done
 
             echo "→ EstatisticasService deve depender do VagaRepository, não do VagaService"
-            EST=$(find "$SRC/statistics" -name 'EstatisticasService.java' 2>/dev/null || true)
+            EST=$(find "$SRC/estatisticas" -name 'EstatisticasService.java' 2>/dev/null || true)
             if [ -n "$EST" ] && grep -nE 'VagaService' "$EST"; then
               aviso "$EST" "EstatisticasService depende de VagaService (deve ser VagaRepository)"
             fi
