@@ -1,0 +1,26 @@
+### Frente 4 — Busca e números
+@base = http://localhost:8080
+
+### Estatísticas do catálogo (200)
+GET {{base}}/estatisticas
+
+### Busca sem filtro: lista inteira (200)
+GET {{base}}/vagas/busca
+
+### Busca por área (200)
+GET {{base}}/vagas/busca?area=Dados
+
+### Dois filtros combinados (200)
+GET {{base}}/vagas/busca?area=Dados&senioridade=Júnior
+
+### Só vagas que aceitam iniciante (200)
+GET {{base}}/vagas/busca?aceitaIniciante=true
+
+### Sem resultado: 200 com lista vazia (NÃO é 404)
+GET {{base}}/vagas/busca?area=Blockchain
+
+### INVÁLIDA — área com mais de 50 caracteres: 400 com "campos"
+GET {{base}}/vagas/busca?area=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+### INVÁLIDA — aceitaIniciante não é booleano: 400
+GET {{base}}/vagas/busca?aceitaIniciante=talvez
