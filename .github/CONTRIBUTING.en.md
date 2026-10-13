@@ -163,7 +163,7 @@ no accents, short. One branch = one topic.
 
 - Java: follow `.editorconfig` (format on save).
 - **Classes and fields** in Portuguese, as in the statement (`VagaRepository`,
-  `todas()`, `titulo`…); only the **package** is English (`br.edu.faculdade.job`…).
+  `todas()`, `titulo`…); the **packages** too (`br.edu.faculdade.vaga`, `empresa`, `pessoa`, `estatisticas`).
 - Every human `.md` has a `*.md` + `*.en.md` pair updated together.
 
 ---

@@ -1,4 +1,8 @@
-package br.edu.faculdade.job;
+package br.edu.faculdade.vaga.repository;
+
+import br.edu.faculdade.vaga.dto.VagaResposta;
+import br.edu.faculdade.vaga.model.Vaga;
+import br.edu.faculdade.vaga.service.VagaService;
 
 import org.springframework.stereotype.Repository;
 
@@ -7,14 +11,23 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Sabe onde o dado está. Hoje é uma lista escrita à mão; na aula 05 vira uma
- * consulta ao banco, e nada fora desta classe muda quando isso acontecer.
+ * Camada de dados da frente Vaga: sabe onde o dado está, e só isso.
  *
- * O repository guarda Vaga, o modelo — nunca VagaResposta. O contrato da API é
- * assunto do service para fora: quem grava não precisa saber o que o cliente vê.
+ * Hoje o "banco" é uma lista em memória escrita à mão; na aula 05 vira uma
+ * consulta ao banco e nada fora desta classe muda. Por isso os dados se perdem
+ * a cada reinício da aplicação, e as 12 vagas iniciais voltam.
  *
- * Sem construtor: é a única classe da frente 1 que não precisa de ninguém. Por
+ * Guarda {@link Vaga}, o modelo interno, nunca {@link VagaResposta}: o
+ * contrato da API é assunto do {@link VagaService} para fora. Também não tem
+ * regra de negócio: não valida, não gera id e não checa duplicidade, apenas
+ * grava, busca, troca e remove. A lista não é thread-safe; a exclusão mútua das
+ * escritas é feita no service.
+ *
+ * Sem construtor: é a única classe da frente que não depende de ninguém, por
  * isso é a primeira a ser construída pelo Spring.
+ *
+ * @author Carlos Neto
+ * @since 2026-10-13
  */
 @Repository
 public class VagaRepository {
@@ -25,8 +38,8 @@ public class VagaRepository {
      * e a busca da aula 03 mostrar diferença. Lista uniforme esconde bug de
      * filtro.
      *
-     * List.of(...) é IMUTÁVEL: envolver por ArrayList é o que torna este
-     * repository escrevível, e foi a primeira mudança da aula 03.
+     * {@code List.of(...)} é imutável: envolver por {@code ArrayList} é o que
+     * torna este repository escrevível.
      */
     private final List<Vaga> vagas = new ArrayList<>(List.of(
         new Vaga("1", "Pessoa Desenvolvedora Front-end Júnior",
